@@ -1,6 +1,12 @@
 #include <stdio.h>
 int main()
 {
-    printf("Let's go.\n");
+    printf("       *\n");
+    printf("      * \n");
+    printf("     *  \n");
+    printf("*   *   \n");
+    printf(" * *    \n");
+    printf("  *     \n");
+
     return 0;
 }
