@@ -81,9 +81,6 @@ int main()
         num_remind++;
     }
 
-    for (i = 0; i < num_remind; i++)
-        printf("%d:%s\n", dates[i], reminders[i]);
-
     // Sort by date
     for (i = 0; i < num_remind; i++)
     {
