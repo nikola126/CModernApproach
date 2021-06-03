@@ -21,9 +21,15 @@ int read_line(char str[], int n)
 
 int main()
 {
-    char reminders[MAX_REMIND][MSG_LEN + 3];
-    char month_str[3], day_str[3], msg_str[MSG_LEN + 1];
-    int month, day, i, j, num_remind = 0;
+    // data arrays
+    char reminders[MAX_REMIND][MSG_LEN];
+    int dates[MAX_REMIND] = {0}; // stores (MONTH * 100) + DAY
+    // input
+    char current_str[MSG_LEN];
+    int current_day, current_month, i, j, num_remind = 0;
+    // used in sorting
+    int swap_date;
+    char swap_str[MSG_LEN];
 
     for (;;)
     {
@@ -32,14 +38,13 @@ int main()
             printf("No space left!\n");
             break;
         }
-
         printf("Enter month, day and reminder (day 0 to terminate): ");
 
         // Get Month
-        scanf("%2d", &month);
-        if (month == 0)
+        scanf("%2d", &current_month);
+        if (current_month == 0)
             break;
-        else if (month < 1 || month > 12)
+        else if (current_month < 1 || current_month > 12)
         {
             printf("Invalid Month! Reminder ignored...\n");
             // clear buffer and try again
@@ -48,13 +53,15 @@ int main()
             continue;
         }
         else
-            sprintf(month_str, "%d", month);
+        {
+            dates[num_remind] += (current_month * 100);
+        }
 
         // Get Day
-        scanf("%2d", &day);
-        if (day == 0)
+        scanf("%2d", &current_day);
+        if (current_day == 0)
             break;
-        else if (day < 0 || day > 31)
+        else if (current_day < 0 || current_day > 31)
         {
             printf("Invalid Day! Reminder ignored...\n");
             // clear buffer and try again
@@ -63,40 +70,43 @@ int main()
             continue;
         }
         else
-            sprintf(day_str, "%2d", day);
+        {
+            dates[num_remind] += (current_day);
+        }
 
         // Get Reminder
-        read_line(msg_str, MSG_LEN);
-
-        // SORTING
-
-        // if day is not in order, remember i
-        for (i = 0; i < num_remind; i++)
-            if (strcmp(day_str, reminders[i]) < 0)
-                break;
-        // and move everything else
-        for (j = num_remind; j > i; j--)
-            strcpy(reminders[j], reminders[j - 1]);
-
-        // if month is not in order, remember i
-        for (i = 0; i < num_remind; i++)
-            if (strcmp(month_str, reminders[i]) < 0)
-                break;
-        // and move everything else
-        for (j = num_remind; j > i; j--)
-            strcpy(reminders[j], reminders[j - 1]);
-
-        // Save all to reminders array
-        strcpy(reminders[i], month_str);
-        strcat(reminders[i], "     ");
-        strcat(reminders[i], day_str);
-        strcat(reminders[i], msg_str);
+        read_line(current_str, MSG_LEN);
+        strcpy(reminders[num_remind], current_str);
 
         num_remind++;
     }
 
-    printf("\nMonth Day Reminder\n");
     for (i = 0; i < num_remind; i++)
-        printf(" %s\n", reminders[i]);
+        printf("%d:%s\n", dates[i], reminders[i]);
+
+    // Sort by date
+    for (i = 0; i < num_remind; i++)
+    {
+        for (j = 0; j < num_remind - i - 1; j++)
+        {
+            if (dates[j] > dates[j + 1])
+            {
+                // swap date
+                swap_date = dates[j];
+                dates[j] = dates[j + 1];
+                dates[j + 1] = swap_date;
+                // swap reminder
+                strcpy(swap_str, reminders[j]);
+                strcpy(reminders[j], reminders[j + 1]);
+                strcpy(reminders[j + 1], swap_str);
+            }
+        }
+    }
+
+    // Print all
+    printf("Month\tDay\tReminder:\n");
+    for (i = 0; i < num_remind; i++)
+        printf("%d\t%d\t%s\n", dates[i] / 100, dates[i] % 100, reminders[i]);
+
     return 0;
 }

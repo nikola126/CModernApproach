@@ -60,7 +60,7 @@ int main()
         }
 
         // Sort by text
-        for (j = num_remind; j > i; i--)
+        for (j = num_remind; j > i; j--)
             strcpy(reminders[j],reminders[j-1]);
         
         // Save all to reminders array
