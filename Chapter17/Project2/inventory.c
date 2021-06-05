@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "readline.h"
 
 #define NAME_LEN 25
-int MAX_PARTS = 2; // changed from macro so it can be increased later
+int MAX_PARTS = 10; // changed from macro so it can be increased later
 int num_parts = 0;
 
 struct part
@@ -13,14 +14,14 @@ struct part
     int on_hand;
 } * inventory;
 
-int find_part(struct part inventory[], int num_parts, int number);
-void insert(struct part inventory[], int num_parts);
-void search(struct part inventory[], int num_parts);
-void update(struct part inventory[], int num_parts);
-void print(struct part inventory[], int num_parts);
+int find_part(int number);
+void insert();
+void search();
+void update();
+void print();
 
-void quicksort(struct part a[], int, int);
-int split(struct part a[], int, int);
+// used in call to qsort
+int compare_strings(const void *, const void *);
 
 int main(void)
 {
@@ -42,16 +43,16 @@ int main(void)
         switch (code)
         {
         case 'i':
-            insert(inventory, num_parts);
+            insert();
             break;
         case 's':
-            search(inventory, num_parts);
+            search();
             break;
         case 'u':
-            update(inventory, num_parts);
+            update();
             break;
         case 'p':
-            print(inventory, num_parts);
+            print();
             break;
         case 'q':
             return 0;
@@ -63,7 +64,7 @@ int main(void)
 }
 
 // looks up a part number in inventory array. returns array index if part number is found
-int find_part(struct part inventory[], int num_parts, int number)
+int find_part(int number)
 {
     for (int i = 0; i < num_parts; i++)
     {
@@ -75,7 +76,7 @@ int find_part(struct part inventory[], int num_parts, int number)
 
 // prompts user for info about a new part, then inserts part in the database;
 // ends prematurely and prints an error message if part already exists or inventory is full
-void insert(struct part inventory[], int num_parts)
+void insert()
 {
     int part_number;
 
@@ -83,23 +84,26 @@ void insert(struct part inventory[], int num_parts)
     {
         // reallocates a new array with twice the size
         MAX_PARTS = MAX_PARTS * 2;
-        inventory = (struct part *)realloc(inventory, sizeof(struct part) * MAX_PARTS);
+        struct part *temp = realloc(inventory, sizeof(struct part) * MAX_PARTS);
 
-        if (inventory == NULL)
+        if (temp == NULL)
         {
             printf("realloc() failed.\n");
             exit(EXIT_FAILURE);
         }
+
+        inventory = (struct part *)temp;
         printf("Reallocation complete.\n");
         printf("-------------------------\n");
-        print(inventory, num_parts);
+        print(inventory);
         printf("-------------------------\n");
+        return;
     }
 
     printf("Enter part number: ");
     scanf("%d", &part_number);
 
-    if (find_part(inventory, num_parts, part_number) >= 0)
+    if (find_part(part_number) >= 0)
     {
         printf("Part already exists.\n");
         return;
@@ -116,13 +120,13 @@ void insert(struct part inventory[], int num_parts)
 
 // prompts user to enter part number, then looks up the part in the database.
 // if it exists, prints name and quantity on hand, otherwiste prints an error message
-void search(struct part inventory[], int num_parts)
+void search()
 {
     int i, number;
 
     printf("Enter part number: ");
     scanf("%d", &number);
-    i = find_part(inventory, num_parts, number);
+    i = find_part(number);
 
     if (i >= 0)
     {
@@ -138,13 +142,13 @@ void search(struct part inventory[], int num_parts)
 // prompts the user to enter a part number.
 // prints error message if part doesnt exist
 // prompts user to enter change in quantity on hand and updates the database
-void update(struct part inventory[], int num_parts)
+void update()
 {
     int i, number, change;
 
     printf("Enter part number: ");
     scanf("%d", &number);
-    i = find_part(inventory, num_parts, number);
+    i = find_part(number);
 
     if (i >= 0)
     {
@@ -161,10 +165,10 @@ void update(struct part inventory[], int num_parts)
 // prints a listing of all parts in the database, showing
 // the part number, part name and quantity on hand;
 // parts are printed in the order in which they were entered in the database
-void print(struct part inventory[], int num_parts)
+void print()
 {
     // sort by part number
-    // quicksort(inventory, 0, num_parts - 1);
+    qsort(inventory, num_parts, sizeof(struct part), compare_strings);
 
     printf("Part Number\tPart Name\tQuantity on hand\n");
     for (int i = 0; i < num_parts; i++)
@@ -173,41 +177,16 @@ void print(struct part inventory[], int num_parts)
     }
 }
 
-// sorts the parts by part number
-void quicksort(struct part a[], int low, int high)
+// comparison function, used in call to qsort()
+int compare_strings(const void *p, const void *q)
 {
+    const struct part *p1 = p;
+    const struct part *q1 = q;
 
-    int middle;
-
-    if (low >= high)
-        return;
-
-    middle = split(a, low, high);
-    quicksort(a, low, middle - 1);
-    quicksort(a, middle + 1, high);
-}
-
-// sorts the parts by part number
-// used by quicksort()
-int split(struct part a[], int low, int high)
-{
-
-    struct part part_element = a[low];
-
-    for (;;)
-    {
-        while (low < high && part_element.number <= a[high].number)
-            high--;
-        if (low >= high)
-            break;
-        a[low++] = a[high];
-
-        while (low < high && a[low].number <= part_element.number)
-            low++;
-        if (low >= high)
-            break;
-        a[high--] = a[low];
-    }
-    a[high] = part_element;
-    return high;
+    if (p1->number < q1->number)
+        return -1;
+    else if (p1->number > q1->number)
+        return 1;
+    else
+        return 0;
 }
