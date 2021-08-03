@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-typedef int Item;  // char when adding symbols { } ( )
+// typedef int Item; // char when adding symbols { } ( )
 
 typedef struct stack_type *Stack;
 
@@ -12,8 +12,8 @@ void destroy(Stack s);
 void make_empty(Stack s);
 bool is_empty(Stack s);
 bool is_full(Stack s);
-void push(Stack s, Item i);
-Item pop(Stack s);
+void push(Stack s, void *p);
+void *pop(Stack s);
 int Length(Stack s);
 
 #endif
