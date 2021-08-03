@@ -93,10 +93,6 @@ void insert()
         }
 
         inventory = (struct part *)temp;
-        printf("Reallocation complete.\n");
-        printf("-------------------------\n");
-        print(inventory);
-        printf("-------------------------\n");
         return;
     }
 

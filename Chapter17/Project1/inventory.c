@@ -83,7 +83,7 @@ void insert()
     {
         // reallocates a new array with twice the size
         MAX_PARTS = MAX_PARTS * 2;
-        struct part* temp = realloc(inventory, sizeof(struct part) * MAX_PARTS);
+        struct part *temp = (part *)realloc(inventory, sizeof(struct part) * MAX_PARTS);
 
         if (temp == NULL)
         {
@@ -91,11 +91,7 @@ void insert()
             exit(EXIT_FAILURE);
         }
 
-        inventory = (struct part*) temp;
-        printf("Reallocation complete.\n");
-        printf("-------------------------\n");
-        print(inventory);
-        printf("-------------------------\n");
+        inventory = (struct part *)temp;
         return;
     }
 
