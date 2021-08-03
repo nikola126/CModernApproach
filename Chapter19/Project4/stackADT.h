@@ -12,7 +12,7 @@ void destroy(Stack s);
 void make_empty(Stack s);
 bool is_empty(Stack s);
 bool is_full(Stack s);
-void push(Stack s, void *p);
+void push(Stack s, const void *p);
 void *pop(Stack s);
 int Length(Stack s);
 

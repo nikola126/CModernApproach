@@ -52,13 +52,13 @@ bool is_full(Stack s)
     return false;
 }
 
-void push(Stack s, void *p)
+void push(Stack s, const void *p)
 {
     struct node *new_node = (node *)malloc(sizeof(struct node));
     if (new_node == NULL)
         terminate("Error in push(): Stack is full.");
 
-    new_node->data = p;
+    new_node->data = (void*) p;
     new_node->next = s->top;
     s->top = new_node;
     s->len += 1; // adjust length after pushing
@@ -83,8 +83,8 @@ void *pop(Stack s)
 
 int Length(Stack s)
 {
-    if (is_empty(s))
+    if (!is_empty(s))
         return s->len;
     else
-        return -1;
+        return 0;
 }

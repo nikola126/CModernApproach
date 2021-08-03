@@ -21,11 +21,11 @@ int main()
     printf("Length of s1 is: %d\n", Length(s1));
     printf("Length of s2 is: %d\n", Length(s2));
 
-    n = pop(s1);
+    n = (char*) pop(s1);
     printf("Popped %s from s1\n", n);
     printf("Length of s1 is: %d\n", Length(s1));
     push(s2, "test");
-    n = pop(s1);
+    n = (char*) pop(s1);
     printf("Popped %s from s1\n", n);
     printf("Length of s1 is: %d\n", Length(s1));
     push(s2, "test");
@@ -34,7 +34,7 @@ int main()
 
     while (!is_empty(s2))
     {
-        printf("Popped %s from s2\n", pop(s2));
+        printf("Popped %s from s2\n", (char*) pop(s2));
         printf("Length of s2 is: %d\n", Length(s2));
     }
 
