@@ -4,11 +4,11 @@
 
 struct queue_type
 {
-    Item data[MAX_QUEUE_SIZE];
-
     int empty_index;
     int next_to_remove;
+    int max_len;
     int len;
+    Item data[];
 };
 
 static void terminate(const char *message)
@@ -17,13 +17,14 @@ static void terminate(const char *message)
     exit(EXIT_FAILURE);
 }
 
-Queue create(void)
+Queue create(unsigned int new_size)
 {
-    Queue q = (Queue) malloc(sizeof(struct queue_type));
+    Queue q = (Queue)malloc(sizeof(struct queue_type) * new_size);
     if (q == NULL)
         terminate("Error in create(): queue could not be created.");
     q->empty_index = 0;
     q->next_to_remove = 0;
+    q->max_len = new_size;
     q->len = 0;
 
     return q;
@@ -37,9 +38,17 @@ void destroy(Queue q)
 // insert at the end
 void push(Queue q, Item p)
 {
-    // check if above max length
-    if (q->len == MAX_QUEUE_SIZE)
-        terminate("Cannot push: Above maximum queue size.");
+    // reallocate if above max length
+    if (q->len == q->max_len)
+    {
+        q = (Queue)realloc(q, q->len * 2);
+        q->max_len = q->len * 2;
+
+        // save data at the next empty index
+        q->data[q->empty_index] = p;
+        q->empty_index += 1;
+        q->len += 1;
+    }
     else
     {
         // save data at the next empty index
