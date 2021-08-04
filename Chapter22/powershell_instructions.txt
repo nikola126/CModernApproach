@@ -1,0 +1,6 @@
+To Build:
+g++ main.c source.c source.h -o program.exe
+
+To Execute with Input Redirection:
+Get-Content input.txt | ./program.exe
+cmd.exe /c "canopen.exe sample1.txt sample2.txt sample3.txt"
