@@ -1,0 +1,4 @@
+3
+10 nails 10000
+12 wrench 10
+13 hammer 15

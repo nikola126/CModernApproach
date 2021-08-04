@@ -1,0 +1,5 @@
+4
+nails 6000
+12 wrench 20
+13 hammer 15
+16 drill 5

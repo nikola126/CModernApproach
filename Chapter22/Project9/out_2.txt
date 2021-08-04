@@ -1,0 +1,5 @@
+4
+10 nails 4000
+12 wrench 10
+15 tool 12
+16 drill 5
